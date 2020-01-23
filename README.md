@@ -9,6 +9,8 @@ Quickcord is a Discord.js wrapper which integrates express frameworks simplicity
 
 ## Features
 * Command Handling
+    * Manual Handling
+    * Command Loading
 * Embeds
 
 ## Getting Started
