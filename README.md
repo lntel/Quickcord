@@ -61,3 +61,20 @@ module.exports = {
 Aliases refers to what the user must type in-order to trigger the command callback. For example, if the user within Discord types: `.help` or `.commands`, this command callback would be triggered. Aliases can either be a single command or multiple, it is completely up to you.
 
 Callback is the function which is called when the command is triggered. This methods has two parameters, the first being the [message response](https://discord.js.org/#/docs/main/stable/class/Message) and the second being everything seperated by a space after the command.
+
+## Embeds
+Embeds within Quickcord are extremely simple. An embed takes a single parameter which is an object which follows the basis of the Discord.js [Rich Embed](https://discord.js.org/#/docs/main/stable/class/RichEmbed) Creating embeds is achieved as is shown within the example below.
+
+```js
+const Quickcord = require('quickcord');
+
+const embed = Quickcord.Embed({
+    title: 'Quickcord Embed',
+    description: 'This is a Quickcord embed',
+    fields: [
+        { name: 'Test field name', value: 'Test field value' },
+        { name: 'Test field name', value: 'Test field value' }
+    ],
+    footer: 'This is a footer'
+})
+```
