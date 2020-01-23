@@ -19,7 +19,45 @@ Firstly, as a prerequisite you must have already created a Discord bot which you
 ```js
 const Quickcord = require('quickcord');
 
+// Using an array of prefixes
 const client = new Quickcord.Client('discordBotToken', ['!', '.']);
+
+// Using a single prefix
+const client = new Quickcord.Client('discordBotToken', '.');
 ```
 
 When instantiating the Quickcord client, there are two parameters which you must provide, the first being the Discord bot token and the second being either a string containing you bot prefix or an array containing multiple prefixes.
+
+## Command Handling
+Command handling within Quickcord allows you to quickly create a response to a command for your Discord bot. Within Quickcord so far there are two methods for handling commands. These two methods are Manual Handling and Command Loading. Manual Handling is good for creating a quick yet robust solution however, it currently lacks features which Command Loading offers such as disabling commands and manual command deletion.
+
+### Manual Handling
+Here is an example of Manual Handling.
+```js
+const Quickcord = require('quickcord');
+
+const client = new Quickcord.Client('DiscordBotToken', '.');
+
+// Here is a single command
+client.command('ping', (res, args) => {
+    // Reply to the user with pong
+    res.reply('pong');
+});
+```
+
+### Command Loading
+Command Loading offers a number of additional features in comparison to Manual Handling as mentioned above. With Command Loading, it is suggested that you create a new directory called `commands` within your application. This will be where you store all of your command files.
+
+Each command file must be layed out as is shown within the example below.
+```js
+module.exports = {
+    aliases: ['help', 'commands'],
+    callback: (res, args) => {
+
+    }
+};
+```
+
+Aliases refers to what the user must type in-order to trigger the command callback. For example, if the user within Discord types: `.help` or `.commands`, this command callback would be triggered. Aliases can either be a single command or multiple, it is completely up to you.
+
+Callback is the function which is called when the command is triggered. This methods has two parameters, the first being the [message response](https://discord.js.org/#/docs/main/stable/class/Message) and the second being everything seperated by a space after the command.
