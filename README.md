@@ -5,10 +5,19 @@ Quickcord is a Discord.js wrapper which integrates express frameworks simplicity
 [![GitHub version](https://badge.fury.io/gh/lntel%2Fquickcord.svg)](https://badge.fury.io/gh/lntel%2Fquickcord)
 
 ## Installation
-`$ npm install quickcord`
+`$ npm install quickcord --save`
 
 ## Features
-
+* Command Handling
+* Embeds
 
 ## Getting Started
-Firstly, you must include the library and instantitate
+Firstly, as a prerequisite you must have already created a Discord bot which you can do within the [Discord Developer Portal](https://discordapp.com/developers/applications/). Furthermore, you must require the Quickcord library from node_modules and instantiate the Quickcord client as is shown within the example below.
+
+```js
+const Quickcord = require('quickcord');
+
+const client = new Quickcord.Client('discordBotToken', ['!', '.']);
+```
+
+When instantiating the Quickcord client, there are two parameters which you must provide, the first being the Discord bot token and the second being either a string containing you bot prefix or an array containing multiple prefixes.
