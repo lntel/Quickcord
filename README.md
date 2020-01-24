@@ -53,7 +53,7 @@ Each command file must be layed out as is shown within the example below.
 module.exports = {
     aliases: ['help', 'commands'],
     callback: (res, args) => {
-
+        res.reply("This is a help commands");
     }
 };
 ```
@@ -61,6 +61,32 @@ module.exports = {
 Aliases refers to what the user must type in-order to trigger the command callback. For example, if the user within Discord types: `.help` or `.commands`, this command callback would be triggered. Aliases can either be a single command or multiple, it is completely up to you.
 
 Callback is the function which is called when the command is triggered. This methods has two parameters, the first being the [message response](https://discord.js.org/#/docs/main/stable/class/Message) and the second being everything seperated by a space after the command.
+
+Furthermore, you can disabled commands, automatically delete command messages and log commands like so:
+
+```js
+module.exports = {
+    aliases: ['help', 'commands'],
+    disabled: true,
+    deleteCommand: true,
+    logging: true,
+    callback: (res, args) => {
+        res.reply("This is a help commands");
+    }
+};
+```
+
+Now it comes to actually loading the commands in from your main app file. This is performed as is show below.
+
+```js
+const Quickcord = require('quickcord');
+
+const client = new Quickcord.Client('DiscordBotToken', '.');
+
+client.loadCommands('./commands');
+```
+
+In the example above, commands are being loaded from the `commands` directory. This can be named whatever you wish however, you must also change the name within the command loading parameter.
 
 ## Embeds
 Embeds within Quickcord are extremely simple. An embed takes a single parameter which is an object which follows the basis of the Discord.js [Rich Embed](https://discord.js.org/#/docs/main/stable/class/RichEmbed) Creating embeds is achieved as is shown within the example below.
