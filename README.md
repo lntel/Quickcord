@@ -3,6 +3,7 @@ Quickcord is a Discord.js wrapper which integrates express frameworks simplicity
 
 [![npm version](https://badge.fury.io/js/quickcord.svg)](https://badge.fury.io/js/quickcord)
 [![GitHub version](https://badge.fury.io/gh/lntel%2Fquickcord.svg)](https://badge.fury.io/gh/lntel%2Fquickcord)
+[![Dependencies Badge](https://david-dm.org/lntel/Quickcord.svg)](https://github.com/lntel/Quickcord/blob/master/package.json)
 
 ## Installation
 `$ npm install quickcord --save`
@@ -104,3 +105,6 @@ const embed = Quickcord.Embed({
     footer: 'This is a footer'
 })
 ```
+
+## License
+[MIT](https://github.com/lntel/Quickcord/blob/master/LICENSE)
