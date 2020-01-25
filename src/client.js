@@ -70,12 +70,14 @@ class Client extends Discord.Client {
      */
     _messageEvent(response) {
 
+        if(response.author.bot) return;
+
         const { content } = response;
 
         let prefixResult;
 
         if(typeof this.prefix === 'object') {
-            prefixResult = this.prefix.find(prefix => prefix == content[0]);
+            prefixResult = this.prefix.find(prefix => prefix == content.charAt(0));
         } else {
             prefixResult = this.prefix;
         }
