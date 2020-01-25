@@ -1,6 +1,6 @@
 {
   "name": "quickcord",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.",
   "main": "index.js",
   "scripts": {
@@ -9,9 +9,11 @@
   "author": "lntel",
   "license": "ISC",
   "repository": "lntel/Quickcord",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "keywords": [
     "discord",
-    "discord.js wrapper",
+    "discord.js",
+    "wrapper",
     "command handler",
     "app",
     "quickcord"
