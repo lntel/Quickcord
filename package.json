@@ -9,7 +9,6 @@
   "author": "lntel",
   "license": "ISC",
   "repository": "lntel/Quickcord",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "keywords": [
     "discord",
     "discord.js",
