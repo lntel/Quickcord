@@ -8,6 +8,14 @@
   },
   "author": "lntel",
   "license": "ISC",
+  "repository": "lntel/Quickcord",
+  "keywords": [
+    "discord",
+    "discord.js wrapper",
+    "command handler",
+    "app",
+    "quickcord"
+  ],
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0"
