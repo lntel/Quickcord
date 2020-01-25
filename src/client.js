@@ -78,7 +78,11 @@ class Client extends Discord.Client {
 
         if(typeof this.prefix === 'object') {
             prefixResult = this.prefix.find(prefix => prefix == content.charAt(0));
+
+            if(prefixResult === undefined) return;
         } else {
+            if(content.charAt(0) !== this.prefix) return;
+
             prefixResult = this.prefix;
         }
 
