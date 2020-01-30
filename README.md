@@ -63,11 +63,12 @@ Aliases refers to what the user must type in-order to trigger the command callba
 
 Callback is the function which is called when the command is triggered. This methods has two parameters, the first being the [message response](https://discord.js.org/#/docs/main/stable/class/Message) and the second being everything seperated by a space after the command.
 
-Furthermore, you can disabled commands, automatically delete command messages and log commands like so:
+Furthermore, using the command loader allows you to use additional options such as automatic command deletion and permitted role checks.
 
 ```js
 module.exports = {
     aliases: ['help', 'commands'],
+    permittedRoles: ['672126724430888960'],
     disabled: true,
     deleteCommand: true,
     logging: true,
