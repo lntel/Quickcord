@@ -2,7 +2,7 @@
 Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.
 
 ![npm](https://img.shields.io/npm/v/quickcord)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/lntel/quickcord)
+![npm](https://img.shields.io/npm/dt/quickcord)
 [![Dependencies Badge](https://david-dm.org/lntel/Quickcord.svg)](https://github.com/lntel/Quickcord/blob/master/package.json)
 ![GitHub Release Date](https://img.shields.io/github/release-date/lntel/quickcord)
 ![GitHub](https://img.shields.io/github/license/lntel/quickcord)
