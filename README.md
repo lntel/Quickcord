@@ -1,8 +1,21 @@
 # Quickcord
 Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.
 
-[![npm version](https://badge.fury.io/js/quickcord.svg)](https://badge.fury.io/js/quickcord)
-[![GitHub version](https://badge.fury.io/gh/lntel%2Fquickcord.svg)](https://badge.fury.io/gh/lntel%2Fquickcord)
+![npm](https://img.shields.io/npm/v/quickcord)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/lntel/quickcord)
+[![Dependencies Badge](https://david-dm.org/lntel/Quickcord.svg)](https://github.com/lntel/Quickcord/blob/master/package.json)
+![GitHub Release Date](https://img.shields.io/github/release-date/lntel/quickcord)
+![GitHub](https://img.shields.io/github/license/lntel/quickcord)
+![GitHub stars](https://img.shields.io/github/stars/lntel/quickcord?style=social)
+
+## Table of contents
+- [Installation](#installation)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Command Handling](#command-handling)
+    - [Manual Handling](#manual-handling)
+    - [Command Loading](#command-loading)
+- [Embeds](#embeds)
 
 ## Installation
 `$ npm install quickcord --save`
@@ -62,11 +75,12 @@ Aliases refers to what the user must type in-order to trigger the command callba
 
 Callback is the function which is called when the command is triggered. This methods has two parameters, the first being the [message response](https://discord.js.org/#/docs/main/stable/class/Message) and the second being everything seperated by a space after the command.
 
-Furthermore, you can disabled commands, automatically delete command messages and log commands like so:
+Furthermore, using the command loader allows you to use additional options such as automatic command deletion and permitted role checks.
 
 ```js
 module.exports = {
     aliases: ['help', 'commands'],
+    permittedRoles: ['672126724430888960'],
     disabled: true,
     deleteCommand: true,
     logging: true,
@@ -104,3 +118,6 @@ const embed = Quickcord.Embed({
     footer: 'This is a footer'
 })
 ```
+
+## License
+[MIT](https://github.com/lntel/Quickcord/blob/master/LICENSE)

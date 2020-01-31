@@ -72,13 +72,17 @@ class Client extends Discord.Client {
 
         if(response.author.bot) return;
 
-        const { content } = response;
+        const { content, member } = response;
 
         let prefixResult;
 
         if(typeof this.prefix === 'object') {
             prefixResult = this.prefix.find(prefix => prefix == content.charAt(0));
+
+            if(prefixResult === undefined) return;
         } else {
+            if(content.charAt(0) !== this.prefix) return;
+
             prefixResult = this.prefix;
         }
 
@@ -88,12 +92,30 @@ class Client extends Discord.Client {
         if(this._instances[command]) {
             const instance = this._instances[command][0];
 
+            // Enable command logging
             if(instance.logging !== undefined && instance.logging) {
                 console.log(`User: ${response.member.user.tag}`);
                 console.log(`Command: ${command}`);
                 console.log(`Args: ${args}\r\n`);
             }
 
+            // Check if user has a specific role
+            if(instance.permittedRoles !== undefined && instance.permittedRoles.length !== 0) {
+                let permitted = false;
+
+                instance.permittedRoles.map(id => {
+                    const result = member.roles.find(role => role.id === id);
+
+                    if(result !== null) {
+                        permitted = true;
+                        return;
+                    }
+                });
+
+                if(!permitted) return response.reply('You are not permitted to use this command');
+            } 
+
+            // Automatically delete command
             if(instance.deleteCommand !== undefined && instance.deleteCommand) {
                 response.delete();
             }
