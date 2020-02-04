@@ -94,6 +94,7 @@ class Client extends Discord.Client {
 
             // Enable command logging
             if(instance.logging !== undefined && instance.logging) {
+                console.log(new Date().toUTCString())
                 console.log(`User: ${response.member.user.tag}`);
                 console.log(`Command: ${command}`);
                 console.log(`Args: ${args}\r\n`);
