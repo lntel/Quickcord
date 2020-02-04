@@ -16,6 +16,9 @@ Quickcord is a Discord.js wrapper which integrates express frameworks simplicity
     - [Manual Handling](#manual-handling)
     - [Command Loading](#command-loading)
 - [Embeds](#embeds)
+- [Api Manager](#api-manager)
+    - [RESTful](#restful)
+- [License](#license)
 
 ## Installation
 `$ npm install quickcord --save`
@@ -118,6 +121,21 @@ const embed = Quickcord.Embed({
     footer: 'This is a footer'
 })
 ```
+
+## Api Manager
+Coming in [v5.2.0](https://www.npmjs.com/package/quickcord/v/5.2.0) is the Api Manager. This allows you to provide a given api within the Api constructor and then easily access all of the endpoints within your Api using a range of HTTP verbs (supported verbs listed below). As of yet, only RESTful Api's are supported however, I hope to support GraphQL and others in future versions.
+
+The Api Manager is built on top of [node-fetch](https://www.npmjs.com/package/node-fetch) and therefore, if you are familiar with either fetch or node-fetch you will find it much easier to use however, this wrapper has made it easier regardless.
+
+### RESTful
+As stated above, the Quickcord Api Manager supports RESTful Api's as I shall demonstrate within an example below.
+
+Supported HTTP verbs:
+* GET
+* POST
+* PUT
+* PATCH
+* DELETE
 
 ## License
 [MIT](https://github.com/lntel/Quickcord/blob/master/LICENSE)
