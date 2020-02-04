@@ -128,7 +128,7 @@ class Client extends Discord.Client {
      * 
      * @param {string} directory This is the directory containing all commands
      */
-    loadCommands(directory) {
+    loadCommands(directory, callback) {
         const files = fs.readdirSync(path.resolve(directory));
         const appropriateFiles = files.filter(file => file.split('.')[1] == 'js');
 
@@ -157,6 +157,8 @@ class Client extends Discord.Client {
                 this.command(instance.aliases, instance.callback);
             }
         });
+
+        callback(appropriateFiles);
     }
 
 }
