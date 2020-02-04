@@ -1,10 +1,11 @@
 {
   "name": "quickcord",
-  "version": "5.1.5",
+  "version": "5.2.0",
   "description": "Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ."
+    "dev": "nodemon .",
+    "build": "webpack"
   },
   "author": "lntel",
   "license": "MIT",
@@ -27,6 +28,8 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
