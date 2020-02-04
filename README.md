@@ -137,5 +137,37 @@ Supported HTTP verbs:
 * PATCH
 * DELETE
 
+### Usage Example
+```js
+const Quickcord = require('quickcord');
+
+// Connect the bot to Discord with prefix
+const client = new Quickcord.Client('bot_token_here', '.');
+
+// New const containing the Api instance
+const Api = new Quickcord.Api('http://localhost:5000/v1');
+
+// Create a command
+client.command('test', (res, args) => {
+    // Send a POST request to the /user endpoint
+    Api.post('/user', {
+        // Include our post data here, it will be automatically serialized
+        username: 'test',
+        password: 'testing'
+    }, async response => {
+        // Extract our json response if request is successful
+        if(response.ok) {
+            const data = await response.json();
+
+            // Send the response data through the bot
+            res.channel.send(data.message);
+        }
+    }, {
+        // Define any additional headers, if not set content-type will be set to application/json automatically
+        'Content-Type': 'application/json'
+    });
+});
+```
+
 ## License
 [MIT](https://github.com/lntel/Quickcord/blob/master/LICENSE)
