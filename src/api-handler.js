@@ -5,13 +5,27 @@ const fetch = require('node-fetch');
  */
 class Api {
 
-    constructor(api) {
+    constructor(api, type = 'restful') {
         this.api = api;
     }
 
     post(endpoint, data, callback) {
         fetch(`${this.api}/${endpoint}`, {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            return response;
+        })
+        .catch(console.error);
+    }
+
+    put(endpoint, data, callback) {
+        fetch(`${this.api}/${endpoint}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
