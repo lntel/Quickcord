@@ -119,14 +119,6 @@ class Api {
     }
 
     get(endpoint, callback, headers = {}) {
-
-        console.log({
-            headers: {
-                ...this.headers,
-                ...headers
-            }
-        });
-
         fetch(`${this.api}/${endpoint}`, {
             method: 'GET',
             headers: {
