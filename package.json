@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "nodemon .",
     "build": "webpack",
-    "test": "mocha",
-    "prepublish": "npm test"
+    "test": "mocha"
   },
   "author": "lntel",
   "license": "MIT",
