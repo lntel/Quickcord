@@ -136,6 +136,9 @@ class Client extends Discord.Client {
         appropriateFiles.map(file => {
             const instance = require(path.join(path.resolve(directory), file));
 
+            if(typeof instance.callback !== 'function' || instance.callback === undefined)
+                return console.error(`${file} does not contain a callback`);
+
             if(instance.aliases === undefined || instance.disabled) return;
 
             if(typeof instance.aliases === 'object') {
