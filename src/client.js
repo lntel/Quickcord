@@ -86,7 +86,7 @@ class Client extends Discord.Client {
             prefixResult = this.prefix;
         }
 
-        const args = content.slice(prefixResult.length).split(" ");
+        const args = content.slice(prefixResult.length).split(' ');
         const command = args.shift().toLowerCase();
 
         if(this._instances[command]) {
