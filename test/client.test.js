@@ -20,6 +20,8 @@ describe('Quickcord', () => {
     it('token length should be greater than 5', () => {
         assert.isAbove(client.token.length, 5);
     });
+
+    //it('')
 });
 
 console.log(client.status)
