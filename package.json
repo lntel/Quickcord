@@ -1,6 +1,6 @@
 {
   "name": "quickcord",
-  "version": "5.3.3",
+  "version": "5.3.4",
   "description": "Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "node-fetch"
   ],
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "^12.0.2",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
