@@ -1,5 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { Client as DiscordClient, Message } from 'discord.js';
+import path from 'path';
+import fs from 'fs';
 
 interface CommandCallback {
     (res: Message, args: any): void
@@ -38,7 +40,7 @@ class Client extends DiscordClient {
         .then(() => {
             this._initListeners();
         })
-        .catch(console.error);
+        .catch(this._handleError);
     }
     
     /**
@@ -92,6 +94,29 @@ class Client extends DiscordClient {
                 cb.apply(null, rest);
             })
         }
+    }
+
+    loadCommands(directory: string, cb: (commands: string[]) => void) {
+        const commandDir: string = path.resolve(directory);
+
+        const files: string[] = fs.readdirSync(commandDir);
+
+        files.map(file => {
+            const cb = require(path.join(commandDir, file));
+
+            const parts = file.split('.');
+
+            if(parts[1] === 'js' || parts[1] === 'ts') {
+                this.command(parts[0], cb);
+            }
+        });
+
+        cb(files);
+    }
+
+    _handleError(err: any) {
+        console.error(err);
+        this.destroy();
     }
 }
 
