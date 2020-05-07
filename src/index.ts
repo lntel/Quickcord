@@ -1,3 +1,7 @@
+import { MessageEmbed as RichEmbed } from 'discord.js';
 import Client from './client';
 
-export default Client;
+export {
+    Client,
+    RichEmbed
+};
