@@ -144,6 +144,7 @@ class Client extends DiscordClient {
      */
     loadCommands(directory: string, cb: (commands: string[]) => void) {
 
+        // This posed an issue with ./src directory
         const commandDir: string = path.resolve(directory);
         
         console.log(commandDir)
