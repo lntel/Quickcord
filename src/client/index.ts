@@ -1,10 +1,19 @@
 // eslint-disable-next-line no-unused-vars
 import { Client as DiscordClient, Message } from 'discord.js';
+
 import path from 'path';
 import fs from 'fs';
 
+import { CommandLoadException } from '../errors';
+
 interface CommandCallback {
     (res: Message, args: any): void
+}
+
+interface LoadedCommand {
+    aliases: Array<string> | string,
+    cb: () => void,
+    options?: CommandOptions
 }
 
 interface CommandOptions {
@@ -28,6 +37,7 @@ class Client extends DiscordClient {
     prefix: string | string[];
     events: IDictionary<CommandParameters> = {};
     commandOptions?: CommandOptions;
+    allowedFileFormated: Array<string>;
 
     /**
      * Constructor
@@ -39,6 +49,10 @@ class Client extends DiscordClient {
         super();
 
         this.prefix = prefix;
+        this.allowedFileFormated = [
+            "js",
+            "ts"
+        ];
 
         this.login(token)
         .then(() => {
@@ -81,7 +95,23 @@ class Client extends DiscordClient {
      */
     command(trigger: string | string[], cb: CommandCallback, options?: CommandOptions) {
         if(Array.isArray(trigger)) {
-            // TODO: allow trigger be an array
+            trigger.map(command => {
+                if(this.events[command]) {
+                    this.events[command].cb.push(cb);
+
+                    if(options) {
+                        this.events[command].options = options;
+                    }
+                } else {
+                    this.events[command] = Object.create({
+                        cb: [cb]
+                    });
+        
+                    if(options) {
+                        this.events[command].options = options;
+                    }
+                }
+            });
         } else {
             if(this.events[trigger]) {
                 this.events[trigger].cb.push(cb);
@@ -146,22 +176,21 @@ class Client extends DiscordClient {
 
         // This posed an issue with ./src directory
         const commandDir: string = path.resolve(directory);
-        
-        console.log(commandDir)
 
-        const files: string[] = fs.readdirSync(commandDir);
+        if(!fs.existsSync(commandDir)) {
+            throw new CommandLoadException(`The directory ${commandDir} does not exist or is not resolvable`);
+        }
+
+        let files: string[] = fs.readdirSync(commandDir);
+
+        files = files.filter(file => this.allowedFileFormated.indexOf(file.split('.')[1]) !== -1);
+
+        if(!files.length) console.warn('The \'loadCommands\' method expects the target directory to contain \'.ts\' or \'.js\' files.');
 
         files.map(file => {
-            const callback = require(path.join(path.resolve(directory), file));
+            const content: LoadedCommand = require(path.join(path.resolve(directory), file));
 
-            const parts = file.split('.');
-
-            if(parts[1] === 'js' || parts[1] === 'ts') {
-
-                console.log(file)
-
-                this.command(parts[0], callback);
-            }
+            this.command(content.aliases, content.cb, content.options);
         });
 
         cb(files);
