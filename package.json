@@ -1,5 +1,5 @@
 {
-  "name": "qc-ts",
+  "name": "quickcord",
   "version": "6.0.0",
   "description": "Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.",
   "main": "lib/index.js",
