@@ -8,7 +8,15 @@ interface CommandCallback {
 }
 
 interface CommandOptions {
-    autoDelete?: Boolean
+    autoDelete?: Boolean,
+    log?: Boolean,
+    disabled?: Boolean,
+    permittedRoles?: Array<Number>
+}
+
+interface CommandParameters {
+    cb: Array<CommandCallback>,
+    options?: CommandOptions
 }
 
 interface IDictionary<TValue> {
@@ -18,7 +26,7 @@ interface IDictionary<TValue> {
 class Client extends DiscordClient {
 
     prefix: string | string[];
-    events: IDictionary<Array<CommandCallback>> = {};
+    events: IDictionary<CommandParameters> = {};
     commandOptions?: CommandOptions;
 
     /**
@@ -27,14 +35,10 @@ class Client extends DiscordClient {
      * @param prefix Prefix to be used may be array
      * @param options Options to be used by the bot
      */
-    constructor(token: string, prefix: string | string[], options?: CommandOptions) {
+    constructor(token: string, prefix: string | string[]) {
         super();
 
         this.prefix = prefix;
-
-        if(options) {
-            this.commandOptions = options;
-        }
 
         this.login(token)
         .then(() => {
@@ -75,11 +79,25 @@ class Client extends DiscordClient {
      * @param trigger Command to be emitted
      * @param cb Callback for command
      */
-    command(trigger: string, cb: CommandCallback) {
-        if(this.events[trigger]) {
-            this.events[trigger].push(cb);
+    command(trigger: string | string[], cb: CommandCallback, options?: CommandOptions) {
+        if(Array.isArray(trigger)) {
+            // TODO: allow trigger be an array
         } else {
-            this.events[trigger] = [cb];
+            if(this.events[trigger]) {
+                this.events[trigger].cb.push(cb);
+    
+                if(options) {
+                    this.events[trigger].options = options;
+                }
+            } else {
+                this.events[trigger] = Object.create({
+                    cb: [cb]
+                });
+    
+                if(options) {
+                    this.events[trigger].options = options;
+                }
+            }
         }
     }
 
@@ -90,30 +108,68 @@ class Client extends DiscordClient {
      */
     trigger(trigger: string, ...rest: any) {
         if(this.events[trigger]) {
-            this.events[trigger].map(cb => {
+
+            const message = rest[0];
+
+            const options: CommandOptions | undefined = this.events[trigger].options;
+
+            if(options) {
+
+                if(options.disabled) {
+                    return;
+                }
+
+                if(options.autoDelete) {
+                    message.delete();
+                }
+
+                if(options.log) {
+                    console.log({
+                        command: trigger,
+                        rest: rest
+                    })
+                }
+            }
+
+            this.events[trigger].cb.map(cb => {
                 cb.apply(null, rest);
             })
         }
     }
 
+    /**
+     * Loads commands from a defined directory
+     * @param directory The directory containing your commands
+     * @param cb The callback triggered which contains all loaded commands
+     */
     loadCommands(directory: string, cb: (commands: string[]) => void) {
+
         const commandDir: string = path.resolve(directory);
+        
+        console.log(commandDir)
 
         const files: string[] = fs.readdirSync(commandDir);
 
         files.map(file => {
-            const cb = require(path.join(commandDir, file));
+            const callback = require(path.join(path.resolve(directory), file));
 
             const parts = file.split('.');
 
             if(parts[1] === 'js' || parts[1] === 'ts') {
-                this.command(parts[0], cb);
+
+                console.log(file)
+
+                this.command(parts[0], callback);
             }
         });
 
         cb(files);
     }
 
+    /**
+     * Handles any unexpected errors
+     * @param err Error containing stacktrace
+     */
     _handleError(err: any) {
         console.error(err);
         this.destroy();
