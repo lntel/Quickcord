@@ -8,10 +8,21 @@ class Api {
         this.baseEndpoint = mainEndpoint;
     }
 
-    get(endpoint: string) {
+    get(endpoint: string, headers?: Record<string, string>) {
         return fetch(this._joinEndpoints(endpoint), {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                ...headers
+            }
+        });
+    }
+
+    post(endpoint: string, body: {}, headers?: Record<string, string>) {
+        return fetch(this._joinEndpoints(endpoint), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...headers
             }
         });
     }
