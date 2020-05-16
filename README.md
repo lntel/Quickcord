@@ -65,6 +65,23 @@ client.command('ping', (res, args) => {
 });
 ```
 
+Additionally, the `command` method can also have a third parameter which is the [CommandOptions](#commandoptions) interface once again, this means you can also use options for simple commands that you want within your bot. Look at the example below for reference.
+
+```js
+const quickcord = require('quickcord');
+
+const client = new quickcord.Client('token here', '.');
+
+client.command('ping', (res, args) => {
+    res.delete();
+
+    res.channel.send('pong');
+}, {
+    autoDelete: true,
+    log: true
+});
+```
+
 ## Command Loading
 Quickcord also offers a command loader which will read inside a directory that you specify for valid `.ts` or `.js` file formats. Quickcord will then load the files in using a `require` function. This means that the file Quickcord is loading in must be in a specific format in-order for Quickcord to effectively load it. This format is specified in the example below.
 
