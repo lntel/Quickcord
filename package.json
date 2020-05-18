@@ -4,6 +4,7 @@
   "description": "Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "homepage": "https://github.com/lntel/Quickcord",
   "scripts": {
     "test": "mocha --require ts-node/register --watch-expensions ts 'test/**/*.ts'",
     "build": "tsc -p .",
