@@ -24,7 +24,7 @@ class EmbedPaginator {
 
         const embed = new MessageEmbed(embedOptions);
 
-        if(!embedOptions.fields?.length || embedOptions.fields.length === 25) {
+        if(!embedOptions.fields?.length || embedOptions.fields.length <= 25) {
             channel.send(embed);
         } else {
 
