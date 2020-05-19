@@ -1,4 +1,4 @@
-import { RichEmbed } from '../src';
+import { RichEmbed, EmbedPaginator } from '../src';
 import { expect } from 'chai';
 
 describe('RichEmbed', () => {
@@ -10,5 +10,11 @@ describe('RichEmbed', () => {
         });
 
         expect(embed.footer).to.not.equal(null);
+    });
+});
+
+describe('EmbedPaginator', () => {
+    it('Page property should only equal 1', () => {
+        // const embed = new EmbedPaginator()
     });
 });

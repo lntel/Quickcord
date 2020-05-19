@@ -1,6 +1,6 @@
 {
   "name": "quickcord",
-  "version": "6.0.3",
+  "version": "6.1.0",
   "description": "Quickcord is a Discord.js wrapper which integrates express frameworks simplicity to enable you to quickly and easily set up a Discord bot with minimal effort.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -27,7 +27,7 @@
     "@types/node": "^13.13.6",
     "@types/node-fetch": "^2.5.7",
     "@types/ws": "^7.2.4",
-    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.33.0",
     "chai": "^4.2.0",
     "dotenv": "^8.2.0",
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "discord.js": "^12.2.0",
+    "math": "0.0.3",
     "node-fetch": "^2.6.0"
   }
 }

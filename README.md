@@ -13,6 +13,10 @@ Quickcord is a Discord.js wrapper which was inspired by express framework which 
 - [Installation](#installation)
 - [Interfaces](#interfaces)
     - [CommandOptions](#commandoptions)
+    - [MessageEmbedOptions](#messageembedoptions)
+- [Embeds](#embeds)
+    - [Standard Embeds](#standard-embeds)
+    - [Embed Pagination](#embed-pagination)
 - [Command Handling](#command-handling)
 - [Command Loading](#command-loading)
 
@@ -47,6 +51,87 @@ interface CommandOptions {
     permittedRoles?: Array<Number>
 }
 ```
+
+### MessageEmbedOptions
+```ts
+interface MessageEmbedOptions {
+    title?: string;
+    description?: string;
+    url?: string;
+    timestamp?: Date | number;
+    color?: ColorResolvable;
+    fields?: EmbedFieldData[];
+    files?: (MessageAttachment | string | FileOptions)[];
+    author?: Partial<MessageEmbedAuthor> & { icon_url?: string; proxy_icon_url?: string };
+    thumbnail?: Partial<MessageEmbedThumbnail> & { proxy_url?: string };
+    image?: Partial<MessageEmbedImage> & { proxy_url?: string };
+    video?: Partial<MessageEmbedVideo> & { proxy_url?: string };
+    footer?: Partial<MessageEmbedFooter> & { icon_url?: string; proxy_icon_url?: string };
+}
+```
+
+## Embeds
+Quickcord offers two types of embeds. The first being a standard [MessageEmbed](https://discord.js.org/#/docs/main/stable/class/MessageEmbed) and the other being Quickcord's very own embed paginator.
+
+### Standard Embeds
+Standard embeds are simply Discord.js [MessageEmbed's](https://discord.js.org/#/docs/main/stable/class/MessageEmbed). They can be used just as you would use them in Discord.js. A few examples are below.
+
+```js
+const { RichEmbed, Client } = require('quickcord');
+
+const bot = new Client(process.env.TOKEN, '.');
+
+bot.command('test', (res, args) => {
+    const embed = new RichEmbed({
+        title: 'Test',
+        description: 'testing this',
+        fields: [
+            { name: 'field1', value: 'field1', inline: true },
+            { name: 'field2', value: 'field2', inline: true }
+        ]
+    });
+
+    res.channel.send(embed);
+});
+```
+
+```js
+const { RichEmbed, Client } = require('quickcord');
+
+const bot = new Client(process.env.TOKEN, '.');
+
+bot.command('test', (res, args) => {
+    const embed = new RichEmbed();
+
+    embed.setTitle('testing');
+    embed.setDescription('testing this');
+
+    res.channel.send(embed);
+});
+```
+
+### Embed Pagination
+The 6.1.0 release of Quickcord has bought the `EmbedPaginator` with it. This class allows you to create an embed just like normal, however, if you have a large number of fields that you want to display, you would have already realised this is limited to `25` by the default [MessageEmbed](https://discord.js.org/#/docs/main/stable/class/MessageEmbed) whereas, using the `EmbedPaginator`, you can provide as many fields as you would like and they will be split into pages which can be changed by reacting to the embed. 
+
+Below is an example of how you may use the `EmbedPaginator`.
+
+```js
+const { EmbedPaginator, Client } = require('quickcord');
+
+const bot = new Client(process.env.TOKEN, '.');
+
+const fields = []; // An array that contains EmbedFields
+
+bot.command('test', (res, args) => {
+    new EmbedPaginator(res.channel, {
+        title: 'testing',
+        description: 'testing this',
+        fields: fields
+    });
+});
+```
+
+The `EmbedPaginator` takes two parameters, the first being the channel to which you want to send the embed and the second being the [MessageEmbedOptions](#messageembedoptions).
 
 ## Command Handling
 Quickcord offers a simply but unique command handler which is takes 2 parameters which are the command and a callback function which is called when the command has been triggered. The callback contains another 2 parameters which are `res` and `args`. `res` contains a [Message](https://discord.js.org/#/docs/main/stable/class/Message) interface which can be used to interact with many things such as the channel, permissions, content, etc. The second callback parameter simply contains arguements which were executed with your command on Discord.
