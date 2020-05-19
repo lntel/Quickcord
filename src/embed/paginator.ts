@@ -1,69 +1,94 @@
 import { ReactionCollector, Message, User, MessageReaction, TextChannel, MessageEmbed, MessageEmbedOptions, EmbedField } from 'discord.js';
 
-interface Page {
-    name: string,
-    value: string,
-    inline?: boolean
-}
-
-type Pages = Array<Array<Page>>;
+type Pages = Array<Array<EmbedField>>;
 
 class EmbedPaginator {
 
     collector: ReactionCollector | null = null;
     embedMessage: Message | null = null;
+    embedOptions: MessageEmbedOptions | null = null;
     page: number = 1;
     totalPages: number = 0;
     pages: Pages = [];
 
-    constructor(channel: TextChannel, embedOptions: MessageEmbed | MessageEmbedOptions) {
+    /**
+     * Embed Paginator generates an embed and automatically
+     * adds pages so that more content can be displayed within
+     * your embed fields
+     * @param channel The channel to which the embed will be sent
+     * @param embedOptions Options to be used within your embed
+     */
+    constructor(channel: TextChannel, embedOptions: MessageEmbedOptions) {
 
         // ➡️ ⬅️
 
         const embed = new MessageEmbed(embedOptions);
 
-        this.totalPages = Math.round(embedOptions.fields!.length / 25);
+        if(!embedOptions.fields?.length || embedOptions.fields.length === 25) {
+            channel.send(embed);
+        } else {
 
-        let tmpArray: Array<Page> = [];
+            this.totalPages = Math.round(embedOptions.fields!.length / 25);
 
-        console.log(embedOptions.fields!.length);
+            let tmpArray: Array<EmbedField> = [];
 
-        (embedOptions.fields! as EmbedField[]).map((field: Page) => {
-            if(tmpArray.length === 25) {
-                this.pages.push(tmpArray);
+            this.embedOptions = embedOptions;
 
-                tmpArray = [];
-            }
-
-            tmpArray.push(field);
-        });
-
-        console.log(this.pages);
-
-        channel.send(embed)
-        .then(msg => {
-            this.embedMessage = msg;
-
-            msg.react('⬅️').then(r => {
-                msg.react('➡️').then(() => {
-                    this._initPaginator(); 
-                });
+            (embedOptions.fields! as EmbedField[]).map((field: EmbedField, index: number) => {
+                if(tmpArray.length === 25 || embedOptions.fields!.length - 1 === index) {
+                    this.pages.push(tmpArray);
+    
+                    tmpArray = [];
+                }
+    
+                tmpArray.push(field);
             });
 
-        });
+            embed.setFooter(`Page ${this.page} of ${this.pages.length}`);
+    
+            //console.log(this.pages.length);
+    
+            channel.send(embed)
+            .then(msg => {
+                this.embedMessage = msg;
+    
+                msg.react('⬅️').then(() => {
+                    msg.react('➡️').then(() => {
+                        this._initPaginator(); 
+                    });
+                });
+    
+            });
+        }
     }
 
+    /**
+     * Updates the embed content, footer is reserved here
+     * TODO: Find and implement footer workaround (perhaps append with delimiter)
+     */
     _update() {
-        //this.embedMessage!.edit();
+
+        this.embedOptions!.fields = undefined;
+
+        const embed = new MessageEmbed({
+            ...this.embedOptions,
+            fields: this.pages[this.page - 1],
+            footer: {
+                text: `Page ${this.page} of ${this.pages!.length}`
+            }
+        });
+
+        this.embedMessage!.edit(embed);
     }
 
     /**
      * Shows the previous page
      */
     _prevPage() {
-        if(this.page !== 0) {
-            // go back
+        if(this.page !== 1) {
             this.page--;
+
+            this._update();
         }
     }
 
@@ -72,9 +97,9 @@ class EmbedPaginator {
      */
     _nextPage() {
         if(this.page + 1 <= this.totalPages) {
-            console.log("forward");
-
             this.page++;
+
+            this._update();
         }
     }
 
