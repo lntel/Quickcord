@@ -1,4 +1,4 @@
-import { ReactionCollector, Message, User, MessageReaction, TextChannel, MessageEmbed, MessageEmbedOptions, EmbedField } from 'discord.js';
+import { ReactionCollector, Message, User, MessageReaction, TextChannel, MessageEmbed, MessageEmbedOptions, EmbedField, DMChannel, NewsChannel } from 'discord.js';
 
 type Pages = Array<Array<EmbedField>>;
 
@@ -18,7 +18,7 @@ class EmbedPaginator {
      * @param channel The channel to which the embed will be sent
      * @param embedOptions Options to be used within your embed
      */
-    constructor(channel: TextChannel, embedOptions: MessageEmbedOptions) {
+    constructor(channel: TextChannel | DMChannel | NewsChannel, embedOptions: MessageEmbedOptions) {
 
         // ➡️ ⬅️
 
