@@ -9,7 +9,8 @@
     "test": "mocha --require ts-node/register --watch-expensions ts 'test/**/*.ts'",
     "build": "tsc -p .",
     "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix"
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "discord.js",
