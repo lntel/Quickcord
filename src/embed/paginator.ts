@@ -57,19 +57,30 @@ class EmbedPaginator {
         //this.embedMessage!.edit();
     }
 
+    /**
+     * Shows the previous page
+     */
     _prevPage() {
         if(this.page !== 0) {
             // go back
+            this.page--;
         }
     }
 
+    /**
+     * Shows the next page
+     */
     _nextPage() {
-        console.log(this.totalPages)
-        if(this.page + 1 < this.totalPages) {
+        if(this.page + 1 <= this.totalPages) {
             console.log("forward");
+
+            this.page++;
         }
     }
 
+    /**
+     * Initiates the paginator and sets up all applicable reaction collectors
+     */
     _initPaginator() {
         const filter = (reaction: MessageReaction, user: User) => {
             return !user.bot && (reaction.emoji.name === '⬅️' || reaction.emoji.name === '➡️');
@@ -80,17 +91,19 @@ class EmbedPaginator {
         this.collector.on('collect', this._identifyReaction.bind(this));
     }
 
+    /**
+     * This identifies which reaction was triggered and checks whether it was a bot or not
+     * Furthermore, it calls relevant methods to change pages
+     * @param reaction The reaction which was triggered
+     * @param user The user that triggered the reaction
+     */
     _identifyReaction(reaction: MessageReaction, user: User) {
         reaction.message.reactions.resolve(reaction)?.users.remove(user.id);
 
         if(reaction.emoji.name === '⬅️') {
-            if(this.page !== 0) {
-                this._prevPage();
-            }
+            this._prevPage();
         } else if(reaction.emoji.name === '➡️') {
-            if(this.page++ < this.totalPages) {
-                this._nextPage();
-            }
+            this._nextPage();
         }
     }
 }
