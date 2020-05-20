@@ -4,6 +4,7 @@ type Pages = Array<Array<EmbedField>>;
 
 class EmbedPaginator {
 
+    limit: number = 25;
     collector: ReactionCollector | null = null;
     embedMessage: Message | null = null;
     embedOptions: MessageEmbedOptions | null = null;
@@ -24,47 +25,108 @@ class EmbedPaginator {
 
         const embed = new MessageEmbed(embedOptions);
 
-        if(!embedOptions.fields?.length || embedOptions.fields.length <= 25) {
-            channel.send(embed);
+        if(!embedOptions.fields?.length || embedOptions.fields.length <= this.limit) {
+            channel.send(embed)
+            .then(msg => {
+                this.embedMessage = msg;
+            })
+            .catch(err => {
+                console.error('EmbedPaginator could not be posted');
+                console.error(err);
+            });
         } else {
-
-            this.totalPages = Math.round(embedOptions.fields!.length / 25);
-
-            let tmpArray: Array<EmbedField> = [];
 
             this.embedOptions = embedOptions;
 
-            (embedOptions.fields! as EmbedField[]).map((field: EmbedField, index: number) => {
-                if(tmpArray.length === 25 || embedOptions.fields!.length - 1 === index) {
-                    this.pages.push(tmpArray);
-    
-                    tmpArray = [];
-                }
-    
-                tmpArray.push(field);
-            });
+            this.calculatePages();
 
-            embed.setFooter(`Page ${this.page} of ${this.pages.length}`);
+            this._insertFields();
+
+            if(embed.footer) {
+                embed.setFooter(`${embed.footer.text} - Page ${this.page} of ${this.pages.length}`);
+            } else {
+                embed.setFooter(`Page ${this.page} of ${this.pages.length}`);
+            }
     
             //console.log(this.pages.length);
     
             channel.send(embed)
             .then(msg => {
                 this.embedMessage = msg;
-    
-                msg.react('⬅️').then(() => {
-                    msg.react('➡️').then(() => {
-                        this._initPaginator(); 
-                    });
-                });
-    
+
+                this._initPaginator();    
+            })
+            .catch(err => {
+                console.error('EmbedPaginator could not be posted');
+                console.error(err);
             });
+        }
+    }
+
+    
+
+    private calculatePages() {
+        this.totalPages = Math.round(this.embedOptions!.fields!.length / this.limit);
+    }
+
+    private _insertFields() {
+        let tmpArray: Array<EmbedField> = [];
+
+        (this.embedOptions!.fields! as EmbedField[]).map((field: EmbedField, index: number) => {
+            if (tmpArray.length === this.limit || this.embedOptions!.fields!.length - 1 === index) {
+                this.pages.push(tmpArray);
+
+                tmpArray = [];
+            }
+
+            tmpArray.push(field);
+        });
+    }
+
+    /**
+     * This method edits your embed, it will automatically adjust depending on many factors.
+     * @param changedOptions The embed options you would like to overwrite your current embed with
+     */
+    edit(changedOptions: MessageEmbedOptions) {
+        this.embedOptions = changedOptions;
+
+        const embed = new MessageEmbed(changedOptions);
+
+        // this.page = 1;
+        if(this.pages.length < this.page) {
+            this.page = this.pages.length;
+        }
+
+        if(changedOptions.fields) {
+
+            this.pages = [];
+
+            if(changedOptions.fields.length > this.limit) {
+                this._insertFields();
+
+                this.calculatePages();
+
+                this._update();
+
+                if(!this.collector) {
+                    this._initPaginator();
+                }
+            } else {
+
+                if(this.collector) {
+                    this.collector.stop();
+                    this.collector = null;
+
+                    this.embedMessage?.reactions.removeAll();
+                }
+
+                this.embedMessage!.edit(embed);
+            }
         }
     }
 
     /**
      * Updates the embed content, footer is reserved here
-     * TODO: Find and implement footer workaround (perhaps append with delimiter)
      */
     _update() {
 
@@ -74,7 +136,7 @@ class EmbedPaginator {
             ...this.embedOptions,
             fields: this.pages[this.page - 1],
             footer: {
-                text: `Page ${this.page} of ${this.pages!.length}`
+                text: this.embedOptions?.footer ? `${this.embedOptions.footer.text} - Page ${this.page} of ${this.pages!.length}` : `Page ${this.page} of ${this.pages!.length}`
             }
         });
 
@@ -107,6 +169,11 @@ class EmbedPaginator {
      * Initiates the paginator and sets up all applicable reaction collectors
      */
     _initPaginator() {
+
+        this.embedMessage!.react('⬅️').then(() => {
+            this.embedMessage!.react('➡️');
+        });
+
         const filter = (reaction: MessageReaction, user: User) => {
             return !user.bot && (reaction.emoji.name === '⬅️' || reaction.emoji.name === '➡️');
         };
