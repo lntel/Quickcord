@@ -11,6 +11,7 @@ interface CommandCallback {
 }
 
 interface LoadedCommand {
+    default?: this | undefined
     aliases: Array<string> | string,
     cb: () => void,
     options?: CommandOptions
@@ -174,7 +175,7 @@ class Client extends DiscordClient {
      */
     loadCommands(directory: string, cb: (commands: string[]) => void) {
 
-        // This posed an issue with ./src directory
+        // This posed an issue with ./src directory (./src/ workaround)
         const commandDir: string = path.resolve(directory);
 
         if(!fs.existsSync(commandDir)) {
@@ -190,7 +191,15 @@ class Client extends DiscordClient {
         files.map(file => {
             const content: LoadedCommand = require(path.join(path.resolve(directory), file));
 
-            this.command(content.aliases, content.cb, content.options);
+            let workingContent;
+            
+            if(content.default) {
+                workingContent = content.default;
+            } else {
+                workingContent = content;
+            }
+
+            this.command(workingContent.aliases, workingContent.cb, workingContent.options);
         });
 
         cb(files);
