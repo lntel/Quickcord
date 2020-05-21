@@ -85,8 +85,9 @@ class EmbedPaginator {
         }
     }
 
-    
-
+    /**
+     * Calculates the amount of total pages
+     */
     private calculatePages() {
 
         if(this.pages.length) {
@@ -96,6 +97,9 @@ class EmbedPaginator {
         }
     }
 
+    /**
+     * Inserts the fields from the embed options property
+     */
     private _insertFields() {
         let tmpArray: Array<EmbedField> = [];
 
@@ -177,6 +181,10 @@ class EmbedPaginator {
         });
     }
 
+    /**
+     * Disposes of the instance if the message is deleted
+     * TODO: Add event listener for this perhaps
+     */
     private _dispose() {
         if(this.collector) {
             this.collector.stop();
