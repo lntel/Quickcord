@@ -17,6 +17,8 @@ Quickcord is a Discord.js wrapper which was inspired by express framework which 
 - [Embeds](#embeds)
     - [Standard Embeds](#standard-embeds)
     - [Embed Pagination](#embed-pagination)
+        - [Editing](#editing)
+        - [Custom Pages](#custom-pages)
 - [Command Handling](#command-handling)
 - [Command Loading](#command-loading)
 
@@ -128,6 +130,59 @@ bot.command('test', (res, args) => {
         description: 'testing this',
         fields: fields
     });
+});
+```
+
+#### Editing
+The EmbedPaginator class does not have to be reinitialized in-order for you to edit it, you may simply use the `edit` method as is shown below.
+
+```js
+const { Client, EmbedPaginator } = require('quickcord');
+
+const bot = new Client(process.env.TOKEN, '.');
+
+bot.command('test', (res, args) => {
+    const embed = new EmbedPaginator(res.channel, {
+        title: 'test',
+        description: 'testing the embed paginator'
+    });
+
+    setTimeout(() => {
+        embed.edit({
+            title: 'this is a new title',
+            description: 'this is also a new desc',
+            fields: [
+                { name: 'we can also use these', value: 'testing' }
+            ]
+        });
+    }, 3000);
+});
+```
+
+#### Custom pages
+Since 6.3.0 the EmbedPaginator class now allows you to provide a third parameter on initialization, this third parameter allows you to provide a `Pages` type which takes an array which contains arrays of `EmbedField` interfaces. An example is shown below in-order to demonstrate how you could potentially use this feature.
+
+```js
+const { Client, EmbedPaginator } = require('quickcord');
+
+const bot = new Client(process.env.TOKEN, '.');
+
+const pages = [
+    [
+        { name: 'this is page 1', value: 'testing' }
+        { name: 'this is also page 1', value: 'testing' }
+    ],
+    [
+        { name: 'this is page 2', value: 'testing' }
+        { name: 'this is also page 2', value: 'testing' }
+    ]
+];
+
+bot.command('test', (res, args) => {
+    new EmbedPaginator(res.channel, {
+        title: 'test',
+        description: 'testing the embed paginator'
+    }, pages);
 });
 ```
 

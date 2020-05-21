@@ -19,56 +19,87 @@ class EmbedPaginator {
      * @param channel The channel to which the embed will be sent
      * @param embedOptions Options to be used within your embed
      */
-    constructor(channel: TextChannel | DMChannel | NewsChannel, embedOptions: MessageEmbedOptions) {
+    constructor(channel: TextChannel | DMChannel | NewsChannel, embedOptions: MessageEmbedOptions, pages?: Pages) {
 
         // ➡️ ⬅️
 
-        const embed = new MessageEmbed(embedOptions);
+        const options: MessageEmbedOptions = (embedOptions as MessageEmbedOptions);
 
-        if(!embedOptions.fields?.length || embedOptions.fields.length <= this.limit) {
-            channel.send(embed)
-            .then(msg => {
-                this.embedMessage = msg;
-            })
-            .catch(err => {
-                console.error('EmbedPaginator could not be posted');
-                console.error(err);
-            });
-        } else {
+        const embed = new MessageEmbed(options);
+
+        if(pages && pages.length) {
+            this.pages = pages;
+
+            console.log(this.pages)
 
             this.embedOptions = embedOptions;
 
-            this.calculatePages();
-
-            this._insertFields();
-
-            if(embed.footer) {
-                embed.setFooter(`${embed.footer.text} - Page ${this.page} of ${this.pages.length}`);
-            } else {
-                embed.setFooter(`Page ${this.page} of ${this.pages.length}`);
-            }
-    
-            //console.log(this.pages.length);
-    
             channel.send(embed)
             .then(msg => {
                 this.embedMessage = msg;
 
-                this._initPaginator();    
+                this._update();
+
+                this.calculatePages();
+
+                this._initPaginator();
             })
-            .catch(err => {
-                console.error('EmbedPaginator could not be posted');
-                console.error(err);
-            });
+            .catch(console.error);
+        } else {
+            if(!options.fields?.length || options.fields.length <= this.limit) {
+                channel.send(embed)
+                .then(msg => {
+                    this.embedMessage = msg;
+                })
+                .catch(err => {
+                    console.error('EmbedPaginator could not be posted');
+                    console.error(err);
+                });
+            } else {
+    
+                this.embedOptions = options;
+    
+                this.calculatePages();
+    
+                this._insertFields();
+    
+                if(embed.footer) {
+                    embed.setFooter(`${embed.footer.text} - Page ${this.page} of ${this.pages.length}`);
+                } else {
+                    embed.setFooter(`Page ${this.page} of ${this.pages.length}`);
+                }
+        
+                //console.log(this.pages.length);
+        
+                channel.send(embed)
+                .then(msg => {
+                    this.embedMessage = msg;
+    
+                    this._initPaginator();    
+                })
+                .catch(err => {
+                    console.error('EmbedPaginator could not be posted');
+                    console.error(err);
+                });
+            } 
         }
     }
 
-    
-
+    /**
+     * Calculates the amount of total pages
+     */
     private calculatePages() {
-        this.totalPages = Math.round(this.embedOptions!.fields!.length / this.limit);
+
+        if(this.pages.length) {
+            this.totalPages = this.pages.length;
+        } else {
+            this.totalPages = Math.round(this.embedOptions!.fields!.length / this.limit);
+        }
     }
 
+    /**
+     * Inserts the fields from the embed options property
+     */
     private _insertFields() {
         let tmpArray: Array<EmbedField> = [];
 
@@ -130,7 +161,9 @@ class EmbedPaginator {
      */
     _update() {
 
-        this.embedOptions!.fields = undefined;
+        if(this.embedOptions?.fields){
+            this.embedOptions.fields = undefined;
+        }
 
         const embed = new MessageEmbed({
             ...this.embedOptions,
@@ -140,7 +173,27 @@ class EmbedPaginator {
             }
         });
 
-        this.embedMessage!.edit(embed);
+        this.embedMessage!.edit(embed)
+        .catch(() => {
+            this._dispose();
+
+            console.log('EmbedPaginator was deleted therefore, cannot be updated');
+        });
+    }
+
+    /**
+     * Disposes of the instance if the message is deleted
+     * TODO: Add event listener for this perhaps
+     */
+    private _dispose() {
+        if(this.collector) {
+            this.collector.stop();
+            this.collector = null;
+        }
+
+        if(this.embedMessage) {
+            this.embedMessage.reactions.removeAll();
+        }
     }
 
     /**
