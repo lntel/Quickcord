@@ -30,8 +30,6 @@ class EmbedPaginator {
         if(pages && pages.length) {
             this.pages = pages;
 
-            console.log(this.pages)
-
             this.embedOptions = embedOptions;
 
             channel.send(embed)
@@ -177,7 +175,7 @@ class EmbedPaginator {
         .catch(() => {
             this._dispose();
 
-            console.log('EmbedPaginator was deleted therefore, cannot be updated');
+            console.error('EmbedPaginator was deleted therefore, cannot be updated');
         });
     }
 
