@@ -25,18 +25,18 @@
   "devDependencies": {
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
-    "@types/node": "^13.13.6",
+    "@types/node": "^13.13.14",
     "@types/node-fetch": "^2.5.7",
-    "@types/ws": "^7.2.4",
+    "@types/ws": "^7.2.6",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "@typescript-eslint/parser": "^2.33.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "chai": "^4.2.0",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "prettier": "^2.0.5",
-    "ts-node": "^8.10.1",
-    "typescript": "^3.9.2"
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   },
   "dependencies": {
     "discord.js": "^12.2.0",
