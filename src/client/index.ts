@@ -6,30 +6,30 @@ import fs from 'fs';
 
 import { CommandLoadException } from '../errors';
 
-interface CommandCallback {
+export interface CommandCallback {
     (res: Message, args: any): void
 }
 
-interface LoadedCommand {
+export interface LoadedCommand {
     default?: this | undefined
     aliases: Array<string> | string,
     cb: () => void,
     options?: CommandOptions
 }
 
-interface CommandOptions {
+export interface CommandOptions {
     autoDelete?: Boolean,
     log?: Boolean,
     disabled?: Boolean,
     permittedRoles?: Array<Number>
 }
 
-interface CommandParameters {
+export interface CommandParameters {
     cb: Array<CommandCallback>,
     options?: CommandOptions
 }
 
-interface IDictionary<TValue> {
+export interface IDictionary<TValue> {
     [key: string]: TValue
 }
 
