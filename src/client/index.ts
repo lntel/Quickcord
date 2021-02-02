@@ -13,7 +13,7 @@ export interface CommandCallback {
 export interface LoadedCommand {
     default?: this | undefined
     aliases: Array<string> | string,
-    cb: () => void,
+    cb: (res: Message, args: any) => void,
     options?: CommandOptions
 }
 
