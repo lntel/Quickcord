@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Client as DiscordClient, Intents, Message } from 'discord.js';
+import { Client as DiscordClient, ClientOptions, Intents, Message } from 'discord.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -46,15 +46,8 @@ class Client extends DiscordClient {
      * @param prefix Prefix to be used may be array
      * @param options Options to be used by the bot
      */
-    constructor(token: string, prefix: string | string[]) {
-        super({
-            ws: {
-                intents: new Intents([
-                    Intents.NON_PRIVILEGED, // include all non-privileged intents, would be better to specify which ones you actually need
-                    "GUILD_MEMBERS", // lets you request guild members (i.e. fixes the issue)
-                ])
-            }
-        });
+    constructor(token: string, prefix: string | string[], options?: ClientOptions) {
+        super(options);
 
         this.prefix = prefix;
         this.allowedFileFormated = [
