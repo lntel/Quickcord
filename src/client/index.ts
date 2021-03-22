@@ -197,7 +197,11 @@ class Client extends DiscordClient {
         if (process[Symbol.for("ts-node.register.instance")]) {
             commandDir = path.resolve(`${this.developmentDirectory}/${directory}`);
         } else {
-            commandDir = path.resolve(`${this.productionDirectory}/${directory}`);
+            if(!this.productionDirectory) {
+                commandDir = path.resolve(directory);
+            } else {
+                commandDir = path.resolve(`${this.productionDirectory}/${directory}`);
+            }
         }
 
         console.log(commandDir)
