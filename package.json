@@ -41,6 +41,7 @@
   "dependencies": {
     "discord.js": "^12.2.0",
     "math": "0.0.3",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "tsconfig": "^7.0.0"
   }
 }
