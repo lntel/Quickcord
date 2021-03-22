@@ -225,6 +225,14 @@ client.command('ping', (res, args) => {
 ## Command Loading
 Quickcord also offers a command loader which will read inside a directory that you specify for valid `.ts` or `.js` file formats. Quickcord will then load the files in using a `require` function. This means that the file Quickcord is loading in must be in a specific format in-order for Quickcord to effectively load it. This format is specified in the example below.
 
+As of version 7.0.0, if you are using typescript, it will no longer be necessary to define `./src` or `./dist`, these will be extracted automatically from the `tsconfig.json` file. An example of this is below:
+
+```ts
+bot.loadCommands('commands', files => {
+    console.log(files);
+});
+```
+
 ```js
 const command = (res, args) => {
     res.reply('pong');
