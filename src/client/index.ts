@@ -3,6 +3,7 @@ import { Client as DiscordClient, ClientOptions, Intents, Message } from 'discor
 
 import path from 'path';
 import fs from 'fs';
+import { loadSync } from 'tsconfig'
 
 import { CommandLoadException } from '../errors';
 
@@ -40,6 +41,9 @@ class Client extends DiscordClient {
     commandOptions?: CommandOptions;
     allowedFileFormated: Array<string>;
 
+    developmentDirectory: string | undefined;
+    productionDirectory: string | undefined;
+
     /**
      * Constructor
      * @param token Token to be used for the bot
@@ -54,6 +58,8 @@ class Client extends DiscordClient {
             "js",
             "ts"
         ];
+
+        this.readEnvironment();
 
         this.login(token)
         .then(() => {
@@ -132,6 +138,17 @@ class Client extends DiscordClient {
         }
     }
 
+    async readEnvironment() {
+        if(fs.existsSync('./tsconfig.json')) {
+            const data = loadSync(fs.readFileSync('./tsconfig.json', 'utf8'));
+
+            const { rootDir, outDir } = data.config.compilerOptions;
+
+            this.developmentDirectory = path.resolve(rootDir);
+            this.productionDirectory = path.resolve(outDir);
+        }
+    }
+
     /**
      * Emits events which trigger command callbacks
      * @param trigger Command that is emitted to the listener
@@ -175,8 +192,17 @@ class Client extends DiscordClient {
      */
     loadCommands(directory: string, cb: (commands: string[]) => void) {
 
+        let commandDir: string
+        // @ts-ignore
+        if (process[Symbol.for("ts-node.register.instance")]) {
+            commandDir = path.resolve(`${this.developmentDirectory}/${directory}`);
+        } else {
+            commandDir = path.resolve(`${this.productionDirectory}/${directory}`);
+        }
+
+        console.log(commandDir)
+
         // This posed an issue with ./src directory (./src/ workaround)
-        const commandDir: string = path.resolve(directory);
 
         if(!fs.existsSync(commandDir)) {
             throw new CommandLoadException(`The directory ${commandDir} does not exist or is not resolvable`);
@@ -188,8 +214,10 @@ class Client extends DiscordClient {
 
         if(!files.length) console.warn('The \'loadCommands\' method expects the target directory to contain \'.ts\' or \'.js\' files.');
 
-        files.map(file => {
-            const content: LoadedCommand = require(path.join(path.resolve(directory), file));
+        console.log("dev")
+
+        files.map(async file => {
+            const content: LoadedCommand = await import(path.join(path.resolve(commandDir), file));
 
             let workingContent;
             
