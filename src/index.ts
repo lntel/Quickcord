@@ -1,6 +1,7 @@
 import { MessageEmbed as RichEmbed } from 'discord.js';
 import Client, { CommandCallback, CommandOptions, CommandParameters, LoadedCommand } from './client';
 import Api from './request';
+import Question from './utilities/question'
 import EmbedPaginator from './embed/paginator';
 
 export {
@@ -11,5 +12,6 @@ export {
     CommandCallback,
     CommandOptions,
     CommandParameters,
-    LoadedCommand
+    LoadedCommand,
+    Question
 };
