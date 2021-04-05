@@ -1,11 +1,12 @@
 // eslint-disable-next-line no-unused-vars
-import { Client as DiscordClient, ClientOptions, Intents, Message } from 'discord.js';
+import { Client as DiscordClient, ClientOptions, Intents, Message, MessageReaction, PartialUser, User } from 'discord.js';
 
 import path from 'path';
 import fs from 'fs';
 import { loadSync } from 'tsconfig'
 
 import { CommandLoadException } from '../errors';
+import { ReactionListener, reactionListeners } from '../utilities/reaction';
 
 export interface CommandCallback {
     (res: Message, args: any): void
@@ -73,6 +74,24 @@ class Client extends DiscordClient {
      */
     _initListeners() {
         this.on('message', this._processMessage);
+        this.on('messageReactionAdd', this._processReactionAdd);
+    }
+
+    async _processReactionAdd(reaction: MessageReaction, user: User | PartialUser) {
+
+        if(reaction.me) return;
+
+        const event: ReactionListener | undefined = reactionListeners.find(e => e.channelId === reaction.message.channel.id);
+
+        const callback = event?.events.find(e => e.emoji === reaction.emoji.name)?.cb;
+
+        if(callback) {
+            callback();
+        }
+
+        await reaction.users.remove(user.id);
+
+        //const callback = events.find(e => e.)
     }
 
     /**
