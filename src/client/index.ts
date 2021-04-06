@@ -81,12 +81,14 @@ class Client extends DiscordClient {
 
         if(reaction.me) return;
 
-        const event: ReactionListener | undefined = reactionListeners.find(e => e.channelId === reaction.message.channel.id);
+        const event: ReactionListener | undefined = (await import('../utilities/reaction')).reactionListeners.find(e => e.channelId === reaction.message.channel.id);
 
-        const callback = event?.events.find(e => e.emoji === reaction.emoji.name)?.cb;
+        const result = event?.events.find(e => `${e.emoji}` === `${reaction.emoji}`);
+
+        const callback = result?.cb;
 
         if(callback) {
-            callback();
+            callback(user, result!.text);
         }
 
         await reaction.users.remove(user.id);
