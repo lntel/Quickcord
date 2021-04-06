@@ -91,7 +91,10 @@ class Client extends DiscordClient {
             callback(user, result!.text);
         }
 
-        await reaction.users.remove(user.id);
+        if(reaction.message.author.id === this.user?.id) {
+            await reaction.users.remove(user.id);
+        }
+
 
         //const callback = events.find(e => e.)
     }
