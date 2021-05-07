@@ -16,7 +16,12 @@ export default async (message: string | string[], res: Message, channel: TextCha
 
         const answers: string[] = [];
 
-        questionMessage = await channel.send(message[i]);
+        try {
+            questionMessage = await channel.send(message[i]);
+        } catch (error) {
+            reject('This user can not recieve DM\'s');
+        }
+
 
         collector.on('collect', async (m: Message) => {
 
@@ -61,8 +66,8 @@ export default async (message: string | string[], res: Message, channel: TextCha
         });
 
         collector.on('end', () => {
-
-        })
+            
+        });
     });
 
 
