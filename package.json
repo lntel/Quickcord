@@ -40,8 +40,10 @@
   },
   "dependencies": {
     "discord.js": "^12.5.1",
+    "loadash": "^1.0.0",
     "math": "0.0.3",
     "node-fetch": "^2.6.0",
-    "tsconfig": "^7.0.0"
+    "tsconfig": "^7.0.0",
+    "ws": "7.4.6"
   }
 }
