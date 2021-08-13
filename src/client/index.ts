@@ -91,7 +91,7 @@ class Client extends DiscordClient {
             callback(user, result!.text);
         }
 
-        if(reaction.message.author.id === this.user?.id && reaction.message.deletable) {
+        if(reaction.message.author.id === this.user?.id && reaction.message.channel.type !== 'dm') {
             await reaction.users.remove(user.id);
         }
 
@@ -228,8 +228,6 @@ class Client extends DiscordClient {
             }
         }
 
-        console.log(commandDir)
-
         // This posed an issue with ./src directory (./src/ workaround)
 
         if(!fs.existsSync(commandDir)) {
@@ -241,8 +239,6 @@ class Client extends DiscordClient {
         files = files.filter(file => this.allowedFileFormated.indexOf(file.split('.')[1]) !== -1);
 
         if(!files.length) console.warn('The \'loadCommands\' method expects the target directory to contain \'.ts\' or \'.js\' files.');
-
-        console.log("dev")
 
         files.map(async file => {
             const content: LoadedCommand = await import(path.join(path.resolve(commandDir), file));
