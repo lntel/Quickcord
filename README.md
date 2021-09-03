@@ -45,11 +45,13 @@ Quickcord is available through NPM and Yarn. Simply run either command below in 
 Within this section, I will define all of the important interfaces within Quickcord for reference later on.
 
 ### CommandOptions
+Command options allow you to control how your command is processed and how the message is dealt with afterwards. I.e. Auto delete command trigger message. Since version 7.2.0, you can now use the `dm` option to define whether the command can be trigger through a direct message or not. This is set to false by default.
 ```ts
 interface CommandOptions {
-    autoDelete?: Boolean,
-    log?: Boolean,
-    disabled?: Boolean,
+    autoDelete?: Boolean
+    log?: Boolean
+    disabled?: Boolean
+    dm?: Boolean
     permittedRoles?: Array<Number>
 }
 ```
