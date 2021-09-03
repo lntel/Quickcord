@@ -20,10 +20,11 @@ export interface LoadedCommand {
 }
 
 export interface CommandOptions {
-    autoDelete?: Boolean,
-    log?: Boolean,
-    disabled?: Boolean,
-    permittedRoles?: Array<Number>
+    autoDelete?: Boolean;
+    log?: Boolean;
+    disabled?: Boolean;
+    dm?: Boolean;
+    permittedRoles?: Array<Number>;
 }
 
 export interface CommandParameters {
@@ -181,18 +182,19 @@ class Client extends DiscordClient {
     trigger(trigger: string, ...rest: any) {
         if(this.events[trigger]) {
 
-            const message = rest[0];
+            const message: Message = rest[0];
 
             const options: CommandOptions | undefined = this.events[trigger].options;
 
             if(options) {
 
-                if(options.disabled) {
+                if(options.disabled || (!options.dm && message.channel.type === 'dm')) {
                     return;
                 }
 
                 if(options.autoDelete) {
-                    message.delete();
+
+                    if(message.deletable) message.delete();
                 }
 
                 if(options.log) {
