@@ -104,7 +104,7 @@ class Client extends DiscordClient {
      * Processes messages to see if they are commands
      * @param message Message interface containing discord.js stuff
      */
-    _processMessage(message: Message) {
+    _processMessage(message: Message): void {
         const { content } = message;
 
         const prefix = content.charAt(0);
@@ -125,7 +125,7 @@ class Client extends DiscordClient {
      * @param trigger Command to be emitted
      * @param cb Callback for command
      */
-    command(trigger: string | string[], cb: CommandCallback, options?: CommandOptions) {
+    command(trigger: string | string[], cb: CommandCallback, options?: CommandOptions): void {
         if(Array.isArray(trigger)) {
             trigger.map(command => {
                 if(this.events[command]) {
@@ -163,7 +163,7 @@ class Client extends DiscordClient {
         }
     }
 
-    async readEnvironment() {
+    async readEnvironment(): Promise<void> {
         if(fs.existsSync('./tsconfig.json')) {
             const data = loadSync(fs.readFileSync('./tsconfig.json', 'utf8'));
 
@@ -179,7 +179,7 @@ class Client extends DiscordClient {
      * @param trigger Command that is emitted to the listener
      * @param rest Any additional information which will be returned in the callback
      */
-    trigger(trigger: string, ...rest: any) {
+    trigger(trigger: string, ...rest: any): void {
         if(this.events[trigger]) {
 
             const message: Message = rest[0];
@@ -216,47 +216,51 @@ class Client extends DiscordClient {
      * @param directory The directory containing your commands
      * @param cb The callback triggered which contains all loaded commands
      */
-    loadCommands(directory: string, cb: (commands: string[]) => void) {
+    loadCommands(directory: string) {
 
-        let commandDir: string
-        // @ts-ignore
-        if (process[Symbol.for("ts-node.register.instance")]) {
-            commandDir = path.resolve(`${this.developmentDirectory}/${directory}`);
-        } else {
-            if(!this.productionDirectory) {
-                commandDir = path.resolve(directory);
+        return new Promise((resolve, reject) => {
+            let commandDir: string
+            // @ts-ignore
+            if (process[Symbol.for("ts-node.register.instance")]) {
+                commandDir = path.resolve(`${this.developmentDirectory}/${directory}`);
             } else {
-                commandDir = path.resolve(`${this.productionDirectory}/${directory}`);
+                if(!this.productionDirectory) {
+                    commandDir = path.resolve(directory);
+                } else {
+                    commandDir = path.resolve(`${this.productionDirectory}/${directory}`);
+                }
             }
-        }
-
-        // This posed an issue with ./src directory (./src/ workaround)
-
-        if(!fs.existsSync(commandDir)) {
-            throw new CommandLoadException(`The directory ${commandDir} does not exist or is not resolvable`);
-        }
-
-        let files: string[] = fs.readdirSync(commandDir);
-
-        files = files.filter(file => this.allowedFileFormated.indexOf(file.split('.')[1]) !== -1);
-
-        if(!files.length) console.warn('The \'loadCommands\' method expects the target directory to contain \'.ts\' or \'.js\' files.');
-
-        files.map(async file => {
-            const content: LoadedCommand = await import(path.join(path.resolve(commandDir), file));
-
-            let workingContent;
-            
-            if(content.default) {
-                workingContent = content.default;
-            } else {
-                workingContent = content;
+    
+            // This posed an issue with ./src directory (./src/ workaround)
+    
+            if(!fs.existsSync(commandDir)) {
+                reject(`The directory ${commandDir} does not exist or is not resolvable`)
             }
+    
+            let files: string[] = fs.readdirSync(commandDir);
+    
+            files = files.filter(file => this.allowedFileFormated.indexOf(file.split('.')[1]) !== -1);
+    
+            if(!files.length) console.warn('The \'loadCommands\' method expects the target directory to contain \'.ts\' or \'.js\' files.');
+    
+            files.map(async file => {
+                const content: LoadedCommand = await import(path.join(path.resolve(commandDir), file));
+    
+                let workingContent;
+                
+                if(content.default) {
+                    workingContent = content.default;
+                } else {
+                    workingContent = content;
+                }
+    
+                this.command(workingContent.aliases, workingContent.cb, workingContent.options);
+            });
+    
+            resolve(true);
 
-            this.command(workingContent.aliases, workingContent.cb, workingContent.options);
         });
 
-        cb(files);
     }
 
     /**
