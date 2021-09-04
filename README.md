@@ -229,9 +229,16 @@ Quickcord also offers a command loader which will read inside a directory that y
 
 As of version 7.0.0, if you are using typescript, it will no longer be necessary to define `./src` or `./dist`, these will be extracted automatically from the `tsconfig.json` file. An example of this is below:
 
+Since version 8.0.0, the command loading function is now asynchronous and can either be used within a try-catch or promise chain. However, this method no longer returns an array of loaded files.
+
 ```ts
-bot.loadCommands('commands', files => {
-    console.log(files);
+await bot.loadCommands('commands');
+```
+or alternatively, with a promise chain:
+```ts
+bot.loadCommands('commands')
+.then(() => {
+    console.log('Commands loaded')
 });
 ```
 
