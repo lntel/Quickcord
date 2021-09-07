@@ -1,4 +1,6 @@
-import { Message, DMChannel, TextChannel, NewsChannel } from 'discord.js'
+import { Message, DMChannel, TextChannel, NewsChannel, User } from 'discord.js'
+
+export const processingUsersInput: string[] = [];
 
 let i = 0;
 
@@ -18,6 +20,10 @@ export default async (message: string | string[], res: Message, channel: TextCha
 
         try {
             questionMessage = await channel.send(message[i]);
+
+            // Push user id to array to ignore commands
+            processingUsersInput.push(res.author.id);
+
         } catch (error) {
             reject('This user can not recieve DM\'s');
         }
@@ -57,6 +63,12 @@ export default async (message: string | string[], res: Message, channel: TextCha
                         
                     }
 
+                    const userIndex = processingUsersInput.indexOf(res.author.id);
+
+                    if(userIndex == -1) return;
+
+                    processingUsersInput.splice(userIndex, 1);
+
                     collector.stop();
                     i = 0;
 
@@ -66,7 +78,11 @@ export default async (message: string | string[], res: Message, channel: TextCha
         });
 
         collector.on('end', () => {
-            
+            const userIndex = processingUsersInput.indexOf(res.author.id);
+
+            if(userIndex == -1) return;
+
+            processingUsersInput.splice(userIndex, 1);
         });
     });
 
