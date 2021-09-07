@@ -7,6 +7,7 @@ import { loadSync } from 'tsconfig'
 
 import { CommandLoadException } from '../errors';
 import { ReactionListener, reactionListeners } from '../utilities/reaction';
+import { processingUsersInput } from '../utilities/question';
 
 export interface CommandCallback {
     (res: Message, args: any): void
@@ -188,7 +189,7 @@ class Client extends DiscordClient {
 
             if(options) {
 
-                if(options.disabled || (!options.dm && message.channel.type === 'dm')) {
+                if(options.disabled || (!options.dm && message.channel.type === 'dm') || processingUsersInput.indexOf(message.author.id) !== -1) {
                     return;
                 }
 
