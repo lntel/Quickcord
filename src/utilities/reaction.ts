@@ -51,7 +51,7 @@ export default async (channel: TextChannel, title: string, events: ReactionEvent
 
             const embedMessage = await channel.send(embed);
 
-            events.map(e => embedMessage.react(`${e.emoji}`).catch(() => console.error("gay")));
+            events.map(e => embedMessage.react(`${e.emoji}`).catch(() => console.error("Error")));
         }
 
         reactionListeners.push({
