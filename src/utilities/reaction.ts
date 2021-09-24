@@ -40,7 +40,7 @@ export default async (channel: TextChannel, title: string, events: ReactionEvent
                 fields: [...events.map(e => {
                     return {
                         name: e.text,
-                        value: e.emoji,
+                        value: e.emoji.toString(),
                         inline: true
                     }
                 })],
@@ -49,7 +49,9 @@ export default async (channel: TextChannel, title: string, events: ReactionEvent
                 }
             });
 
-            const embedMessage = await channel.send(embed);
+            const embedMessage = await channel.send({
+                embeds: [embed]
+            });
 
             events.map(e => embedMessage.react(`${e.emoji}`).catch(() => console.error("Error")));
         }
@@ -71,14 +73,4 @@ export default async (channel: TextChannel, title: string, events: ReactionEvent
     // })
 
     return;
-
-    const embed = new RichEmbed({
-        title: 'test',
-        description: 'Some test',
-        footer: {
-            text: `Quickcord #${generateId()}`
-        }
-    });
-
-    console.log(await channel.send(embed))
 }

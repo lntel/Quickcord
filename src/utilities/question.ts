@@ -12,7 +12,10 @@ export default async (message: string | string[], res: Message, channel: TextCha
     let filter = (m: Message) => m.author.id === res.author.id;
     let questionMessage: Message;
 
-    const collector = channel.createMessageCollector(filter, { time: 1000 * 60 });
+    const collector = channel.createMessageCollector({
+        filter,
+        time: 1000 * 60
+    });
 
     return new Promise(async (resolve, reject) => {
 

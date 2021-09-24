@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Client as DiscordClient, ClientOptions, Intents, Message, MessageReaction, PartialUser, User } from 'discord.js';
+import { Client as DiscordClient, ClientOptions, Intents, Message, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -54,7 +54,8 @@ class Client extends DiscordClient {
      * @param options Options to be used by the bot
      */
     constructor(token: string, prefix: string | string[], options?: ClientOptions) {
-        super(options);
+
+        super(options || ({} as ClientOptions));
 
         this.prefix = prefix;
         this.allowedFileFormated = [
@@ -79,13 +80,15 @@ class Client extends DiscordClient {
         this.on('messageReactionAdd', this._processReactionAdd);
     }
 
-    async _processReactionAdd(reaction: MessageReaction, user: User | PartialUser) {
+    async _processReactionAdd(reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) {
 
         if(reaction.me) return;
 
         const event: ReactionListener | undefined = (await import('../utilities/reaction')).reactionListeners.find(e => e.channelId === reaction.message.channel.id);
 
-        const result = event?.events.find(e => `${e.emoji}` === `${reaction.emoji}`);
+        if(!event) return;
+
+        const result = event.events.find(e => `${e.emoji}` === `${reaction.emoji}`);
 
         const callback = result?.cb;
 
@@ -189,7 +192,7 @@ class Client extends DiscordClient {
 
             if(options) {
 
-                if(options.disabled || (!options.dm && message.channel.type === 'dm') || processingUsersInput.indexOf(message.author.id) !== -1) {
+                if(options.disabled || (!options.dm && message.channel.type === 'DM') || processingUsersInput.indexOf(message.author.id) !== -1) {
                     return;
                 }
 
