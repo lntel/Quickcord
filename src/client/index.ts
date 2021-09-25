@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Client as DiscordClient, ClientOptions, Intents, Message, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
+import { Client as DiscordClient, ClientOptions, Interaction, Intents, Message, MessageReaction, PartialMessageReaction, PartialUser, User, CommandInteraction } from 'discord.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -8,6 +8,9 @@ import { loadSync } from 'tsconfig'
 import { CommandLoadException } from '../errors';
 import { ReactionListener, reactionListeners } from '../utilities/reaction';
 import { processingUsersInput } from '../utilities/question';
+import { REST } from '@discordjs/rest'
+import { Routes } from 'discord-api-types/v9';
+import { SlashCommandDefinition } from '../types';
 
 export interface CommandCallback {
     (res: Message, args: any): void
@@ -39,9 +42,11 @@ export interface IDictionary<TValue> {
 
 class Client extends DiscordClient {
 
+    token: string;
     prefix: string | string[];
     events: IDictionary<CommandParameters> = {};
     commandOptions?: CommandOptions;
+    slashCommands?: SlashCommandDefinition[];
     allowedFileFormated: Array<string>;
 
     developmentDirectory: string | undefined;
@@ -56,6 +61,8 @@ class Client extends DiscordClient {
     constructor(token: string, prefix: string | string[], options?: ClientOptions) {
 
         super(options || ({} as ClientOptions));
+
+        this.token = token;
 
         this.prefix = prefix;
         this.allowedFileFormated = [
@@ -76,8 +83,19 @@ class Client extends DiscordClient {
      * Initiates relevant event listeners
      */
     _initListeners() {
-        this.on('message', this._processMessage);
+        this.on('messageCreate', this._processMessage);
+        this.on('interactionCreate', this._processInteractionCreation);
         this.on('messageReactionAdd', this._processReactionAdd);
+    }
+
+    async _processInteractionCreation(interaction: Interaction | CommandInteraction) {
+        if(!interaction.isCommand()) return;
+
+        const command = this.slashCommands?.find(cmd => cmd.name === interaction.commandName);
+
+        if(!command) return;
+
+        command.cb(interaction);
     }
 
     async _processReactionAdd(reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) {
@@ -213,6 +231,37 @@ class Client extends DiscordClient {
                 cb.apply(null, rest);
             })
         }
+    }
+
+    loadSlashCommands(commands: SlashCommandDefinition[], appId: string, guildId: string) {
+        return new Promise(async (resolve, reject) => {
+            
+            try {
+                this.slashCommands = commands;
+
+                const restCommands = [...commands.map(cmd => {
+                    return {
+                        name: cmd.name,
+                        description: cmd.description
+                    }
+                })]
+
+                const rest = new REST({
+                    version: '9'
+                })
+                .setToken(this.token);
+
+                await rest.put(Routes.applicationGuildCommands(appId, guildId), {
+                    body: restCommands
+                });
+
+                resolve(true);
+                
+            } catch (error) {
+                reject(error);
+            }
+    
+        });
     }
 
     /**

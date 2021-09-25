@@ -1,4 +1,4 @@
-import { Message, DMChannel, TextChannel, NewsChannel, User } from 'discord.js'
+import { Message, DMChannel, TextChannel, NewsChannel, User, TextBasedChannels } from 'discord.js'
 
 export const processingUsersInput: string[] = [];
 
@@ -8,7 +8,7 @@ let i = 0;
  * Good although, single message parameter (string literal) isn't compatible
  */
 
-export default async (message: string | string[], res: Message, channel: TextChannel | DMChannel | NewsChannel, deleteAfter: boolean = true): Promise<string | string[]> => {
+export default async (message: string | string[], res: Message, channel: TextBasedChannels, deleteAfter: boolean = true): Promise<string | string[]> => {
     let filter = (m: Message) => m.author.id === res.author.id;
     let questionMessage: Message;
 
