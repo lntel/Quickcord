@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const client: Client = new Client(process.env.TOKEN!, '.');
+const client: Client = new Client(process.env.TOKEN!, '.', {
+    intents: ['GUILDS']
+});
 
 describe('client', () => {
     it('Client user property should not be null', () => {
