@@ -32,7 +32,9 @@ class EmbedPaginator {
 
             this.embedOptions = embedOptions;
 
-            channel.send(embed)
+            channel.send({
+                embeds: [embed]
+            })
             .then(msg => {
                 this.embedMessage = msg;
 
@@ -45,7 +47,9 @@ class EmbedPaginator {
             .catch(console.error);
         } else {
             if(!options.fields?.length || options.fields.length <= this.limit) {
-                channel.send(embed)
+                channel.send({
+                    embeds: [embed]
+                })
                 .then(msg => {
                     this.embedMessage = msg;
                 })
@@ -69,7 +73,9 @@ class EmbedPaginator {
         
                 //console.log(this.pages.length);
         
-                channel.send(embed)
+                channel.send({
+                    embeds: [embed]
+                })
                 .then(msg => {
                     this.embedMessage = msg;
     
@@ -149,7 +155,9 @@ class EmbedPaginator {
                     this.embedMessage?.reactions.removeAll();
                 }
 
-                this.embedMessage!.edit(embed);
+                this.embedMessage!.edit({
+                    embeds: [embed]
+                });
             }
         }
     }
@@ -171,7 +179,9 @@ class EmbedPaginator {
             }
         });
 
-        this.embedMessage!.edit(embed)
+        this.embedMessage!.edit({
+            embeds: [embed]
+        })
         .catch(() => {
             this._dispose();
 
@@ -229,7 +239,9 @@ class EmbedPaginator {
             return !user.bot && (reaction.emoji.name === '⬅️' || reaction.emoji.name === '➡️');
         };
 
-        this.collector = this.embedMessage!.createReactionCollector(filter);
+        this.collector = this.embedMessage!.createReactionCollector({
+            filter
+        });
 
         this.collector.on('collect', this._identifyReaction.bind(this));
     }
