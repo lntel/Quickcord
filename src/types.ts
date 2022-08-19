@@ -1,11 +1,11 @@
-import { Interaction, ApplicationCommandOptionChoice, ApplicationCommandOption, ApplicationCommandOptionType } from "discord.js";
+import { Interaction, ApplicationCommandOptionChoiceData, ApplicationCommandOption, ApplicationCommandOptionType } from "discord.js";
 
 export interface SlashCommandDefinition {
     type?: ApplicationCommandOptionType;
     name: string;
     description: string;
     required?: boolean;
-    choices?: ApplicationCommandOptionChoice[];
+    choices?: ApplicationCommandOptionChoiceData[];
     options?: ApplicationCommandOption[];
     cb: (interaction: Interaction) => void;
 }
