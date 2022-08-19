@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const client: Client = new Client(process.env.TOKEN!, '.', {
-    intents: ['GUILDS']
+    intents: ["Guilds"]
 });
 
 describe('client', () => {
