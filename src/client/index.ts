@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Client as DiscordClient, ClientOptions, Interaction, Intents, Message, MessageReaction, PartialMessageReaction, PartialUser, User, CommandInteraction } from 'discord.js';
+import { Client as DiscordClient, ClientOptions, Interaction, Message, MessageReaction, PartialMessageReaction, PartialUser, User, CommandInteraction, ChannelType, CacheType } from 'discord.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -88,7 +88,7 @@ class Client extends DiscordClient {
         this.on('messageReactionAdd', this._processReactionAdd);
     }
 
-    async _processInteractionCreation(interaction: Interaction | CommandInteraction) {
+    async _processInteractionCreation(interaction: Interaction<CacheType>) {
         if(!interaction.isCommand()) return;
 
         const command = this.slashCommands?.find(cmd => cmd.name === interaction.commandName);
@@ -210,7 +210,7 @@ class Client extends DiscordClient {
 
             if(options) {
 
-                if(options.disabled || (!options.dm && message.channel.type === 'DM') || processingUsersInput.indexOf(message.author.id) !== -1) {
+                if(options.disabled || (!options.dm && message.channel.type === ChannelType.DM) || processingUsersInput.indexOf(message.author.id) !== -1) {
                     return;
                 }
 

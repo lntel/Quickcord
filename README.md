@@ -32,11 +32,17 @@ After requiring Quickcord in your app file, you can initalise the `Client` class
 const quickcord = require("quickcord");
 
 // Using only one prefix
-const bot = new quickcord.Client(process.env.TOKEN, ".");
+const bot = new quickcord.Client(process.env.TOKEN, ".", {
+  intents: ["GUILDS", "GUILD_MESSAGES"]
+});
 
 // Using multiple prefixes
-const bot = new quickcord.Client(process.env.TOKEN, [".", "!"]);
+const bot = new quickcord.Client(process.env.TOKEN, [".", "!"], {
+  intents: ["GUILDS", "GUILD_MESSAGES"]
+});
 ```
+
+It is required to define intents such as *GUILDS* and *GUILD_MESSAGES* otherwise the bot will not be able to read any of the message object content or interact with the server. For a list of intents, take a look at [Discord's intent list](https://discord.com/developers/docs/topics/gateway#list-of-intents).
 
 ## Installation
 
