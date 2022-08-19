@@ -33,12 +33,12 @@ const quickcord = require("quickcord");
 
 // Using only one prefix
 const bot = new quickcord.Client(process.env.TOKEN, ".", {
-  intents: ["GUILDS", "GUILD_MESSAGES"]
+  intents: ['Guilds', 'GuildMessages']
 });
 
 // Using multiple prefixes
 const bot = new quickcord.Client(process.env.TOKEN, [".", "!"], {
-  intents: ["GUILDS", "GUILD_MESSAGES"]
+  intents: ['Guilds', 'GuildMessages']
 });
 ```
 
