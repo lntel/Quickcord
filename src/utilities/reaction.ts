@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import { Message, TextChannel, PartialUser, User, EmbedFieldData, EmojiIdentifierResolvable, MessageEmbedOptions } from "discord.js";
+import { Message, TextChannel, PartialUser, User, EmojiIdentifierResolvable, EmbedData } from "discord.js";
 import { RichEmbed } from "..";
 
 const generateId = () => {
@@ -19,7 +19,7 @@ export interface ReactionListener {
 
 export const reactionListeners: ReactionListener[] = [];
 
-export default async (channel: TextChannel, title: string, events: ReactionEvent[], options?: MessageEmbedOptions) => {
+export default async (channel: TextChannel, title: string, events: ReactionEvent[], options?: EmbedData) => {
 
     try {
         const messages = await channel.messages.fetch();

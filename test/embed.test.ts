@@ -9,7 +9,7 @@ describe('RichEmbed', () => {
             }
         });
 
-        expect(embed.footer).to.not.equal(null);
+        expect(embed.data.footer).to.not.equal(null);
     });
 });
 

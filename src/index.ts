@@ -1,4 +1,4 @@
-import { MessageEmbed as RichEmbed } from 'discord.js';
+import { EmbedBuilder as RichEmbed } from 'discord.js';
 import Client, { CommandCallback, CommandOptions, CommandParameters, LoadedCommand } from './client';
 import Question from './utilities/question'
 import ReactionHandler from './utilities/reaction'

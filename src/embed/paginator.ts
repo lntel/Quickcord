@@ -1,4 +1,4 @@
-import { ReactionCollector, Message, User, MessageReaction, TextChannel, MessageEmbed, MessageEmbedOptions, EmbedField, DMChannel, NewsChannel } from 'discord.js';
+import { ReactionCollector, Message, User, MessageReaction, TextChannel, EmbedBuilder, EmbedData, EmbedField, DMChannel, NewsChannel } from 'discord.js';
 
 type Pages = Array<Array<EmbedField>>;
 
@@ -7,7 +7,7 @@ class EmbedPaginator {
     limit: number = 25;
     collector: ReactionCollector | null = null;
     embedMessage: Message | null = null;
-    embedOptions: MessageEmbedOptions | null = null;
+    embedOptions: EmbedData | null = null;
     page: number = 1;
     totalPages: number = 0;
     pages: Pages = [];
@@ -19,13 +19,13 @@ class EmbedPaginator {
      * @param channel The channel to which the embed will be sent
      * @param embedOptions Options to be used within your embed
      */
-    constructor(channel: TextChannel | DMChannel | NewsChannel, embedOptions: MessageEmbedOptions, pages?: Pages) {
+    constructor(channel: TextChannel | DMChannel | NewsChannel, embedOptions: EmbedData, pages?: Pages) {
 
         // ➡️ ⬅️
 
-        const options: MessageEmbedOptions = (embedOptions as MessageEmbedOptions);
+        const options: EmbedData = (embedOptions as EmbedData);
 
-        const embed = new MessageEmbed(options);
+        const embed = new EmbedBuilder(options);
 
         if(pages && pages.length) {
             this.pages = pages;
@@ -65,10 +65,14 @@ class EmbedPaginator {
     
                 this._insertFields();
     
-                if(embed.footer) {
-                    embed.setFooter(`${embed.footer.text} - Page ${this.page} of ${this.pages.length}`);
+                if(embed.data.footer) {
+                    embed.setFooter({
+                        text: `${embed.data.footer?.text} - Page ${this.page} of ${this.pages.length}`
+                    });
                 } else {
-                    embed.setFooter(`Page ${this.page} of ${this.pages.length}`);
+                    embed.setFooter({
+                        text: `Page ${this.page} of ${this.pages.length}`
+                    });
                 }
         
                 //console.log(this.pages.length);
@@ -122,10 +126,10 @@ class EmbedPaginator {
      * This method edits your embed, it will automatically adjust depending on many factors.
      * @param changedOptions The embed options you would like to overwrite your current embed with
      */
-    edit(changedOptions: MessageEmbedOptions) {
+    edit(changedOptions: EmbedData) {
         this.embedOptions = changedOptions;
 
-        const embed = new MessageEmbed(changedOptions);
+        const embed = new EmbedBuilder(changedOptions);
 
         // this.page = 1;
         if(this.pages.length < this.page) {
@@ -171,7 +175,7 @@ class EmbedPaginator {
             this.embedOptions.fields = undefined;
         }
 
-        const embed = new MessageEmbed({
+        const embed = new EmbedBuilder({
             ...this.embedOptions,
             fields: this.pages[this.page - 1],
             footer: {
