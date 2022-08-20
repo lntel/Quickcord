@@ -10,7 +10,7 @@ import { ReactionListener, reactionListeners } from '../utilities/reaction';
 import { processingUsersInput } from '../utilities/question';
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9';
-import { SlashCommandDefinition } from '../types';
+// import { SlashCommandDefinition } from '../types';
 
 export interface CommandCallback {
     (res: Message, args: any): void
@@ -46,7 +46,7 @@ class Client extends DiscordClient {
     prefix: string | string[];
     events: IDictionary<CommandParameters> = {};
     commandOptions?: CommandOptions;
-    slashCommands?: SlashCommandDefinition[];
+    // slashCommands?: SlashCommandDefinition[];
     allowedFileFormated: Array<string>;
 
     developmentDirectory: string | undefined;
@@ -84,19 +84,19 @@ class Client extends DiscordClient {
      */
     _initListeners() {
         this.on('messageCreate', this._processMessage);
-        this.on('interactionCreate', this._processInteractionCreation);
+        // this.on('interactionCreate', this._processInteractionCreation);
         this.on('messageReactionAdd', this._processReactionAdd);
     }
 
-    async _processInteractionCreation(interaction: Interaction<CacheType>) {
-        if(!interaction.isCommand()) return;
+    // async _processInteractionCreation(interaction: Interaction<CacheType>) {
+    //     if(!interaction.isCommand()) return;
 
-        const command = this.slashCommands?.find(cmd => cmd.name === interaction.commandName);
+    //     const command = this.slashCommands?.find(cmd => cmd.name === interaction.commandName);
 
-        if(!command) return;
+    //     if(!command) return;
 
-        command.cb(interaction);
-    }
+    //     command.cb(interaction);
+    // }
 
     async _processReactionAdd(reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser) {
 
@@ -186,6 +186,7 @@ class Client extends DiscordClient {
     }
 
     async readEnvironment(): Promise<void> {
+
         if(fs.existsSync('./tsconfig.json')) {
             const data = loadSync(fs.readFileSync('./tsconfig.json', 'utf8'));
 
@@ -233,36 +234,36 @@ class Client extends DiscordClient {
         }
     }
 
-    loadSlashCommands(commands: SlashCommandDefinition[], appId: string, guildId: string) {
-        return new Promise(async (resolve, reject) => {
+    // loadSlashCommands(commands: SlashCommandDefinition[], appId: string, guildId: string) {
+    //     return new Promise(async (resolve, reject) => {
             
-            try {
-                this.slashCommands = commands;
+    //         try {
+    //             this.slashCommands = commands;
 
-                const restCommands = [...commands.map(cmd => {
-                    return {
-                        name: cmd.name,
-                        description: cmd.description
-                    }
-                })]
+    //             const restCommands = [...commands.map(cmd => {
+    //                 return {
+    //                     name: cmd.name,
+    //                     description: cmd.description
+    //                 }
+    //             })]
 
-                const rest = new REST({
-                    version: '9'
-                })
-                .setToken(this.token);
+    //             const rest = new REST({
+    //                 version: '9'
+    //             })
+    //             .setToken(this.token);
 
-                await rest.put(Routes.applicationGuildCommands(appId, guildId), {
-                    body: restCommands
-                });
+    //             await rest.put(Routes.applicationGuildCommands(appId, guildId), {
+    //                 body: restCommands
+    //             });
 
-                resolve(true);
+    //             resolve(true);
                 
-            } catch (error) {
-                reject(error);
-            }
+    //         } catch (error) {
+    //             reject(error);
+    //         }
     
-        });
-    }
+    //     });
+    // }
 
     /**
      * Loads commands from a defined directory
