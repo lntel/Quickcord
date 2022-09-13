@@ -42,7 +42,7 @@ export interface IDictionary<TValue> {
 
 class Client extends DiscordClient {
 
-    token: string;
+    // token: string;
     prefix: string | string[];
     events: IDictionary<CommandParameters> = {};
     commandOptions?: CommandOptions;
