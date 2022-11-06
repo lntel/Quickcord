@@ -42,7 +42,6 @@ export interface IDictionary<TValue> {
 
 class Client extends DiscordClient {
 
-    token: string;
     prefix: string | string[];
     events: IDictionary<CommandParameters> = {};
     commandOptions?: CommandOptions;
@@ -251,7 +250,7 @@ class Client extends DiscordClient {
                 const rest = new REST({
                     version: '10'
                 })
-                .setToken(this.token);
+                .setToken(this.token!);
 
                 await rest.put(Routes.applicationGuildCommands(appId, guildId), {
                     body: restCommands
