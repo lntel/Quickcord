@@ -20,6 +20,9 @@
     "discord",
     "utility"
   ],
+  "resolutions": {
+    "@sapphire/shapeshift": "^3.6.0"
+  },
   "author": "lntel",
   "license": "MIT",
   "devDependencies": {

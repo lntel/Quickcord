@@ -242,12 +242,14 @@ class Client extends DiscordClient {
                 const restCommands = [...commands.map(cmd => {
                     return {
                         name: cmd.name,
-                        description: cmd.description
+                        description: cmd.description,
+                        options: cmd.options,
+                        // type: cmd.type
                     }
                 })]
 
                 const rest = new REST({
-                    version: '9'
+                    version: '10'
                 })
                 .setToken(this.token);
 

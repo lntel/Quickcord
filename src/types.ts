@@ -1,15 +1,10 @@
-<<<<<<< Updated upstream
-import { Interaction, ApplicationCommandOptionChoiceData, ApplicationCommandOption, ApplicationCommandOptionType } from "discord.js";
-=======
-import { Interaction, ApplicationCommandChoicesData, ApplicationCommandOption, ApplicationCommandOptionType, SlashCommandBuilder } from "discord.js";
->>>>>>> Stashed changes
+import { Interaction, ApplicationCommandOption, ApplicationCommandOptionType, SlashCommandBuilder, CacheType } from "discord.js";
 
 export interface SlashCommandDefinition {
     type?: ApplicationCommandOptionType;
     name: string;
     description: string;
     required?: boolean;
-    choices?: ApplicationCommandOptionChoiceData[];
     options?: ApplicationCommandOption[];
     cb: (interaction: Interaction) => void;
 }
